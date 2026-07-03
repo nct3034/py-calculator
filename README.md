@@ -1,26 +1,61 @@
 # 🧮 Scientific Python Calculator
 
-Một ứng dụng máy tính bỏ túi đa năng được xây dựng bằng Python với giao diện đồ họa (GUI) hoàn chỉnh. Dự án áp dụng kiến trúc MVC (Model-View-Controller) để đảm bảo code sạch, dễ mở rộng và bảo trì.
+A versatile, multi-functional calculator application built with Python, featuring a complete graphical user interface (GUI). The project strictly follows the MVC (Model-View-Controller) architecture to ensure the code remains clean, scalable, and easy to maintain.
 
-## 🌟 Tính năng (Features)
+## 🌟 Features
 
-- **Toán học cơ bản:** Các phép tính đại số, hỗ trợ xử lý số phức.
-- **Chuyển đổi cơ số:** Hỗ trợ nhị phân (Binary), thập phân (Decimal), thập lục phân (Hexadecimal) và các phép toán đại số Bool.
-- **Giải phương trình:** Giải nhanh phương trình bậc 2, bậc 3 và bất phương trình.
-- **Toán cao cấp (SymPy):** Tính đạo hàm, tích phân, và các hàm xác suất thống kê.
-- **Quản lý biến nhớ:** Lưu trữ và gọi lại các giá trị tùy chỉnh thông qua các phím biến (A, B, C, ...).
+- **Basic Mathematics:** Standard algebraic operations with full support for complex numbers.
+- **Base Conversion & Logic:** Convert between Binary, Decimal, and Hexadecimal bases. Full support for bitwise and Boolean logic operations.
+- **Equation Solver:** Quickly solve quadratic (2nd degree) and cubic (3rd degree) equations, as well as inequalities.
+- **Advanced Math (SymPy):** Calculus operations including derivatives and integrals, plus probability and statistics functions.
+- **Memory Management:** Store, retrieve, and manage custom values using variable keys (A, B, C, etc.).
 
-## 🛠️ Công nghệ sử dụng (Tech Stack)
+## 🛠️ Tech Stack
 
-- **Ngôn ngữ:** Python 3.x
-- **Giao diện (UI/UX):** PyQt6 / PySide6
-- **Xử lý Toán học:** `SymPy` (Symbolic mathematics), `NumPy`
-- **Kiến trúc:** MVC (Model - View - Controller)
+- **Language:** Python 3.x
+- **UI/UX:** PyQt6 / PySide6
+- **Math Processing:** `SymPy` (Symbolic mathematics), `NumPy`
+- **Architecture:** MVC (Model - View - Controller)
 
-## 🚀 Hướng dẫn Cài đặt (Installation)
+## 🚀 Installation
 
-1. **Clone repository:**
+1. **Clone the repository:**
+
    ```bash
    git clone [https://github.com/nct3034/py-calculator.git](https://github.com/nct3034/py-calculator.git)
    cd py-calculator
    ```
+
+2. **Virtual Environment and Dependencies**
+
+- Create a Virtual Environment
+
+```bash
+   python -m venv venv
+```
+
+- Activate the Environment (window)
+
+```bash
+   venv\Scripts\activate
+```
+
+- Install the Dependencies
+
+```bash
+   pip install -r requirements.txt
+```
+
+3. **Running and Testing command**
+
+- Running the application
+
+```bash
+   python main.py
+```
+
+- Testing
+
+```bash
+   python -m unittest discover -s tests -v
+```
