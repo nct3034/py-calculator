@@ -19,14 +19,14 @@ A versatile, multi-functional calculator application built with Python, featurin
 
 ## 🚀 Installation
 
-1. **Clone the repository:**
+### 1. Clone the repository:
 
-   ```bash
-   git clone [https://github.com/nct3034/py-calculator.git](https://github.com/nct3034/py-calculator.git)
-   cd py-calculator
-   ```
+```bash
+git clone [https://github.com/nct3034/py-calculator.git]
+cd py-calculator
+```
 
-2. **Virtual Environment and Dependencies**
+### 2. Virtual Environment and Dependencies
 
 - Create a Virtual Environment
 
@@ -46,15 +46,15 @@ A versatile, multi-functional calculator application built with Python, featurin
    pip install -r requirements.txt
 ```
 
-3. **Running and Testing command**
+### 3. Running and Testing command
 
-- Running the application
+- **Running the application**
 
 ```bash
    python main.py
 ```
 
-- Testing
+- **Testing**
 
 ```bash
    python -m unittest discover -s tests -v

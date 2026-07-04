@@ -30,7 +30,7 @@ class TestArithmeticMath(unittest.TestCase):
         with self.assertRaises(ZeroDivisionError):
             self.math.divide(10, 0)
 
-    def test_floating_point_precision(self):
+    def test_floating_point(self):
         self.assertAlmostEqual(self.math.add(0.1, 0.2), 0.3)
         self.assertAlmostEqual(self.math.divide(1, 3), 0.3333333, places=7)
 
