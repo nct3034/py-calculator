@@ -43,7 +43,7 @@ cd py-calculator
 - Install the Dependencies
 
 ```bash
-   pip install -r requirements.txt
+   python -m pip install -r requirements.txt
 ```
 
 ### 3. Running and Testing command
