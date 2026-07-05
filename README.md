@@ -63,5 +63,5 @@ cd py-calculator
 **Test each file**
 
 ```bash
-   python -m unittest tests/YOUR-TEST-FILE-NAME
+   python -m unittest -v tests/YOUR-TEST-FILE-NAME
 ```
