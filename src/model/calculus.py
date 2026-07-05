@@ -4,7 +4,7 @@ class Calculus:
     def __init__(self):
         self.x = sp.Symbol('x')
 
-    def derivative(self, expression: str) -> str:
+    def calculate_derivative(self, expression: str) -> str:
         try:
             parsed_expression = sp.sympify(expression)
             result = sp.diff(parsed_expression, self.x)
