@@ -59,3 +59,9 @@ cd py-calculator
 ```bash
    python -m unittest discover -s tests -v
 ```
+
+**Test each file**
+
+```bash
+   python -m unittest tests/YOUR-TEST-FILE-NAME
+```
