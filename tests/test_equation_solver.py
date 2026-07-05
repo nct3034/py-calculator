@@ -30,3 +30,6 @@ class TestEquationSolver(unittest.TestCase):
         self.assertCountEqual(self.math.solve_cubic(1, 0, 0, -1), expected_complex)
         
         self.assertCountEqual(self.math.solve_cubic(0, 1, -5, 6), [2, 3])
+
+if __name__ == '__main__':
+    unittest.main()

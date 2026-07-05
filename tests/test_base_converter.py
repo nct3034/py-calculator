@@ -42,3 +42,6 @@ class TestBaseConverter(unittest.TestCase):
             
             hex_str = self.converter.to_hex(num)
             self.assertEqual(self.converter.from_hex(hex_str), num)
+
+if __name__ == '__main__':
+    unittest.main()

@@ -26,3 +26,7 @@ class TestLogicalMath(unittest.TestCase):
         self.assertEqual(self.math.logical_xor(True, False), True)
         self.assertEqual(self.math.logical_xor(False, True), True)
         self.assertEqual(self.math.logical_xor(False, False), False)
+
+
+if __name__ == '__main__':
+    unittest.main()

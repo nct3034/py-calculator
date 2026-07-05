@@ -32,3 +32,6 @@ class TestCalculus(unittest.TestCase):
     def test_calculate_definite_integral_invalid(self):
         with self.assertRaises(ValueError):
             self.calc.calculate_definite_integral("x +* 2", 0, 1)
+
+if __name__ == '__main__':
+    unittest.main()

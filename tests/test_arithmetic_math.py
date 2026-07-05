@@ -45,3 +45,7 @@ class TestArithmeticMath(unittest.TestCase):
         self.assertEqual(self.math.subtract(5.5, 2 + 1j), 3.5 - 1j)    # Float - Complex
         self.assertEqual(self.math.multiply(2 + 3j, 2.5), 5.0 + 7.5j)  # Complex * Float
         self.assertEqual(self.math.divide(10 + 5j, 5), 2 + 1j)         # Complex / Int
+
+
+if __name__ == '__main__':
+    unittest.main()

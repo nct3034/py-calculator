@@ -31,3 +31,6 @@ class TestBitwiseMath(unittest.TestCase):
     def test_right_shift(self):
         self.assertEqual(self.math.shift_right_op(10, 1), 5)
         self.assertEqual(self.math.shift_right_op(15, 2), 3)
+
+if __name__ == '__main__':
+    unittest.main()

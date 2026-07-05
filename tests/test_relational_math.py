@@ -37,3 +37,6 @@ class TestRelationalMath(unittest.TestCase):
         self.assertEqual(self.math.is_not_equal(10, 10), False)
         self.assertEqual(self.math.is_not_equal(2 + 3j, 4 + 1j), True)
         self.assertEqual(self.math.is_not_equal(2 + 3j, 2 + 3j), False)
+
+if __name__ == '__main__':
+    unittest.main()
