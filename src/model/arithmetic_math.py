@@ -12,5 +12,5 @@ class ArithmeticMath:
     
     def divide(self, a: Number, b: Number) -> float | complex:
         if b == 0:
-            raise ZeroDivisionError
+            raise ZeroDivisionError("Division by zero")
         return a / b
