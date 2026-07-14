@@ -108,7 +108,7 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentIndex(index)
         
         # 2. Làm mờ toàn bộ các nút
-        buttons = [self.btn_standard, self.btn_scientific, self.btn_solver, self.btn_base]
+        buttons = [self.btn_standard, self.btn_scientific, self.btn_solver, self.btn_base, self.btn_statistic]
         for btn in buttons:
             btn.setStyleSheet("""
                 QPushButton {
