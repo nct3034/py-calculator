@@ -27,16 +27,18 @@ class MainWindow(QMainWindow):
         nav_layout = QHBoxLayout(nav_bar)
         nav_layout.setContentsMargins(10, 10, 10, 10)
         
-        # Tạo 4 nút bấm chuyển trang
+        # Tạo nút bấm chuyển trang
         self.btn_standard = self.create_nav_button("Standard", active=True)
         self.btn_scientific = self.create_nav_button("Scientific")
         self.btn_solver = self.create_nav_button("Solver")
         self.btn_base = self.create_nav_button("Programmer")
+        self.btn_statistic = self.create_nav_button("Statistic")
         
         nav_layout.addWidget(self.btn_standard)
         nav_layout.addWidget(self.btn_scientific)
         nav_layout.addWidget(self.btn_solver)
         nav_layout.addWidget(self.btn_base)
+        nav_layout.addWidget(self.btn_statistic)
         
         main_layout.addWidget(nav_bar)
         
@@ -48,21 +50,24 @@ class MainWindow(QMainWindow):
         self.page_standard = StandardCalc()
         
         # Các trang 1, 2, 3: Tạm thời để màn hình trống chờ phát triển
-        self.page_scientific = self.create_placeholder("Scientific Mode\n(Đang xây dựng...)")
-        self.page_solver = self.create_placeholder("Equation Solver\n(Đang xây dựng...)")
-        self.page_base = self.create_placeholder("Base Converter\n(Đang xây dựng...)")
+        self.page_scientific = self.create_placeholder("This feature is comming soon!")
+        self.page_solver = self.create_placeholder("This feature is comming soon!")
+        self.page_base = self.create_placeholder("This feature is comming soon!")
+        self.page_statistic = self.create_placeholder("This feature is comming soon!")
         
         # Đưa tất cả các trang vào Stack
         self.stack.addWidget(self.page_standard)   
         self.stack.addWidget(self.page_scientific) 
         self.stack.addWidget(self.page_solver)     
-        self.stack.addWidget(self.page_base)       
+        self.stack.addWidget(self.page_base)     
+        self.stack.addWidget(self.page_statistic)  
         
         # --- 3. GẮN TÍN HIỆU CLICK NÚT ---
         self.btn_standard.clicked.connect(lambda: self.switch_page(0, self.btn_standard))
         self.btn_scientific.clicked.connect(lambda: self.switch_page(1, self.btn_scientific))
         self.btn_solver.clicked.connect(lambda: self.switch_page(2, self.btn_solver))
         self.btn_base.clicked.connect(lambda: self.switch_page(3, self.btn_base))
+        self.btn_statistic.clicked.connect(lambda: self.switch_page(4, self.btn_statistic))
 
     # --- CÁC HÀM HỖ TRỢ GIAO DIỆN ---
     def create_placeholder(self, text):
