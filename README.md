@@ -7,8 +7,7 @@ A versatile, multi-functional calculator application built with Python, featurin
 - **Basic Mathematics:** Standard algebraic operations with full support for complex numbers.
 - **Base Conversion & Logic:** Convert between Binary, Decimal, and Hexadecimal bases. Full support for bitwise and Boolean logic operations.
 - **Equation Solver:** Quickly solve quadratic (2nd degree) and cubic (3rd degree) equations, as well as inequalities.
-- **Advanced Math (SymPy):** Calculus operations including derivatives and integrals, plus probability and statistics functions.
-- **Memory Management:** Store, retrieve, and manage custom values using variable keys (A, B, C, etc.).
+- **Advanced Math:** Calculus operations including derivatives and integrals, plus probability and statistics functions.
 
 ## 🛠️ Tech Stack
 

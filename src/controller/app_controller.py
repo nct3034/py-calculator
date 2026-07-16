@@ -48,6 +48,14 @@ class AppController:
                 pass
             return
 
+        # --- TÍNH NĂNG TỰ ĐỘNG ĐÓNG NGOẶC CHO UI ---
+        open_parens = expression.count('(')
+        close_parens = expression.count(')')
+        if open_parens > close_parens:
+            # Thiếu bao nhiêu ngoặc đóng thì nhân lên bấy nhiêu lần và nối vào cuối chuỗi
+            expression += ')' * (open_parens - close_parens)
+        # ------------------------------------------
+
         # TÍNH TOÁN BÌNH THƯỜNG
         ui.lbl_expression.setText(expression + " =")
         try:
@@ -62,19 +70,11 @@ class AppController:
         expr = expr.replace('π', str(math.pi)).replace('e', str(math.e))
         expr = expr.replace('²', '^2')
 
+        # (Đã chuyển đoạn tự động đóng ngoặc lên hàm process_scientific)
+
         if 'Ans' in expr:
             expr = expr.replace('Ans', str(self.memory.get_ans()))
                 
-        # Xử lý Tổ hợp và Chỉnh hợp (Ép về số nguyên int)
-        if 'ℂ' in expr:
-            parts = expr.split('ℂ')
-            # Ép kiểu int cho kết quả
-            return int(math.comb(int(float(parts[0])), int(float(parts[1]))))
-        if 'ℙ' in expr:
-            parts = expr.split('ℙ')
-            # Ép kiểu int cho kết quả
-            return int(math.perm(int(float(parts[0])), int(float(parts[1]))))
-
         result = self.parser.evaluate(expr)
         
         if isinstance(result, float):
