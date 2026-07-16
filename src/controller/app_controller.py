@@ -71,7 +71,19 @@ class AppController:
             result = self.evaluate_string(expression)
             self.memory.save_calculation(expression, result)
             ui.lbl_display.setText(str(result))
-        except Exception as e:
+            
+        except ZeroDivisionError:
+            ui.lbl_display.setText("Division zero")
+            
+        except ValueError as e:
+            # Phân loại ValueError: Nếu liên quan đến cú pháp thì báo Syntax Error, nếu không thì báo Value Error
+            error_msg = str(e)
+            if any(word in error_msg for word in ["Syntax", "parentheses", "Insufficient", "Invalid"]):
+                ui.lbl_display.setText("Syntax Error")
+            else:
+                ui.lbl_display.setText("Value Error")
+                
+        except Exception:
             ui.lbl_display.setText("Error")
 
     def evaluate_string(self, expr: str):

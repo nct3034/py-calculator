@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QPushButton, QLabel, QHBoxLayout, QLineEdit
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal, QEvent
 
 class ScientificCalc(QWidget):
     evaluate_requested = pyqtSignal(str)
@@ -24,6 +24,7 @@ class ScientificCalc(QWidget):
         self.lbl_display = QLineEdit("")
         self.lbl_display.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.lbl_display.setStyleSheet("background: transparent; border: none; color: white; font-size: 36px; font-weight: bold; padding-right: 5px;")
+        self.lbl_display.installEventFilter(self)
         
         main_layout.addWidget(self.lbl_expression)
         main_layout.addWidget(self.lbl_display)
@@ -86,6 +87,11 @@ class ScientificCalc(QWidget):
         main_layout.addLayout(grid)
         self.lbl_display.setFocus()
 
+    def showEvent(self, event):
+        """Hàm này tự động chạy mỗi khi giao diện Scientific được hiển thị"""
+        super().showEvent(event)
+        self.lbl_display.setFocus() # Ép con trỏ nhấp nháy ngay lập tức
+
     def create_button(self, text, color, bg, width):
         btn = QPushButton(text)
         btn.setFixedSize(width, 30)
@@ -140,7 +146,7 @@ class ScientificCalc(QWidget):
             if len(cur) > 0 and cur != "Error": # Sửa điều kiện từ > 1 thành > 0
                 left_part = cur[:pos]
                 deleted_len = 1
-                funcs = ["arcsin(", "arccos(", "arctan(", "sin(", "cos(", "tan(", "log(", "ln(", "√(", "∛("]
+                funcs = ["arcsin(", "arccos(", "arctan(", "sin(", "cos(", "tan(", "log(", "ln(", "√(", "∛(", "Ans"]
                 for f in funcs:
                     if left_part.endswith(f):
                         deleted_len = len(f)
@@ -184,3 +190,72 @@ class ScientificCalc(QWidget):
             self.lbl_display.setCursorPosition(pos + len(insert_text))
 
         self.lbl_display.setFocus()
+
+    def on_enter_pressed(self):
+            cur = self.lbl_display.text()
+            if cur:
+                self.evaluate_requested.emit(cur)
+                self.just_evaluated = True
+
+    def handle_typing_state(self, char):
+        # Reset màn hình nếu người dùng gõ phím ngay sau khi vừa có kết quả
+        if self.just_evaluated:
+            self.just_evaluated = False
+            # Nếu gõ toán tử -> tiếp tục nối Ans
+            if char in "+-*/":
+                self.lbl_display.setText("Ans")
+                self.lbl_display.setCursorPosition(3)
+            # Nếu gõ số -> xóa trắng để bắt đầu nhập biểu thức mới
+            else:
+                self.lbl_display.setText("")
+
+    def eventFilter(self, obj, event):
+        if obj == self.lbl_display and event.type() == QEvent.Type.KeyPress:
+            key = event.key()
+            char = event.text()
+            
+            # 1. Kích hoạt tính toán khi bấm phím Enter hoặc Return
+            if key == Qt.Key.Key_Return or key == Qt.Key.Key_Enter:
+                self.on_enter_pressed()
+                return True 
+                
+            # 2. XỬ LÝ PHÍM BACKSPACE (Xóa 1 cụm/1 ký tự như nút DEL)
+            if key == Qt.Key.Key_Backspace:
+                class MockBtnDel:
+                    def text(self): return "DEL"
+                self.on_button_clicked(MockBtnDel())
+                return True
+                
+            # --- BỔ SUNG: XỬ LÝ PHÍM DELETE (Xóa toàn bộ như nút AC) ---
+            if key == Qt.Key.Key_Delete:
+                class MockBtnAC:
+                    def text(self): return "AC"
+                self.on_button_clicked(MockBtnAC())
+                return True
+            # ------------------------------------------------------------
+                
+            # 3. Cho phép dùng phím điều hướng (Trái/Phải) tự do
+            if key in (Qt.Key.Key_Left, Qt.Key.Key_Right):
+                self.handle_typing_state("")
+                return False 
+                
+            # 4. Lọc ký tự gõ vào: Chỉ cho phép số và + - * / .
+            if char:
+                if char in "0123456789+-*/.":
+                    self.handle_typing_state(char)
+                    
+                    if char == '*':
+                        self.lbl_display.insert('×')
+                        return True
+                    elif char == '/':
+                        self.lbl_display.insert('÷')
+                        return True
+                    elif char == '-':
+                        self.lbl_display.insert('−')
+                        return True
+                        
+                    return False
+                else:
+                    return True # Chặn tất cả các chữ cái và ký tự lạ
+
+        return super().eventFilter(obj, event)
