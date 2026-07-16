@@ -22,9 +22,8 @@ class ScientificCalc(QWidget):
         self.lbl_expression.setAlignment(Qt.AlignmentFlag.AlignRight)
         
         self.lbl_display = QLineEdit("")
-        self.lbl_display.setReadOnly(True)
         self.lbl_display.setAlignment(Qt.AlignmentFlag.AlignRight)
-        self.lbl_display.setStyleSheet("background: transparent; border: none; color: white; font-size: 36px; font-weight: bold;")
+        self.lbl_display.setStyleSheet("background: transparent; border: none; color: white; font-size: 36px; font-weight: bold; padding-right: 5px;")
         
         main_layout.addWidget(self.lbl_expression)
         main_layout.addWidget(self.lbl_display)
@@ -61,17 +60,19 @@ class ScientificCalc(QWidget):
             # Dòng 2: Lượng giác, Logarit
             (1, 0, "sin", "arcsin", "func"), (1, 1, "cos", "arccos", "func"), (1, 2, "tan", "arctan", "func"), (1, 3, "log", "10ˣ", "func"), (1, 4, "ln", "eˣ", "func"),
             # Dòng 3: Ngoặc, S-D, Hằng số
-            (2, 0, "(", "(", "func"), (2, 1, ")", ")", "func"), (2, 2, "S-D", "S-D", "func"), (2, 3, "π", "π", "func"), (2, 4, "e", "e", "func"),
+            # Dòng 3: Ngoặc, Hằng số e, π, S-D
+            (2, 0, "(", "(", "func"), (2, 1, ")", ")", "func"), (2, 2, "e", "e", "func"), (2, 3, "π", "π", "func"), (2, 4, "S-D", "S-D", "yellow_btn"),
             # Dòng 4-7: Số và toán tử cơ bản
             (3, 0, "7", "7", "num"), (3, 1, "8", "8", "num"), (3, 2, "9", "9", "num"), (3, 3, "DEL", "DEL", "action"), (3, 4, "AC", "AC", "action"),
             (4, 0, "4", "4", "num"), (4, 1, "5", "5", "num"), (4, 2, "6", "6", "num"), (4, 3, "×", "×", "op"), (4, 4, "÷", "÷", "op"),
             (5, 0, "1", "1", "num"), (5, 1, "2", "2", "num"), (5, 2, "3", "3", "num"), (5, 3, "+", "+", "op"), (5, 4, "−", "−", "op"),
-            (6, 0, "0", "0", "num"), (6, 1, ".", ",", "num"), (6, 2, "Ans", "Ans", "action"), (6, 3, "=", "=", "equals"), (6, 4, "", "", "empty")
+            (6, 0, "0", "0", "num"), (6, 1, ".", ".", "num"), (6, 2, "Ans", "Ans", "yellow_btn"), (6, 3, "=", "=", "equals"), (6, 4, "", "", "empty")
         ]
 
         for r, c, norm, shift, b_type in buttons:
             if not norm: continue # Bỏ qua ô trống
             btn = QPushButton(norm)
+            btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
             self.style_button(btn, b_type)
             if norm != shift:
                 self.shiftable_buttons[btn] = (norm, shift)
@@ -83,10 +84,12 @@ class ScientificCalc(QWidget):
             else: grid.addWidget(btn, r, c)
             
         main_layout.addLayout(grid)
+        self.lbl_display.setFocus()
 
     def create_button(self, text, color, bg, width):
         btn = QPushButton(text)
         btn.setFixedSize(width, 30)
+        btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         btn.setStyleSheet(f"QPushButton {{ color: {color}; background-color: {bg}; border-radius: 10px; font-weight: bold; font-size: 11px; }} QPushButton:hover {{ background-color: {color}; color: black; }}")
         return btn
 
@@ -99,6 +102,8 @@ class ScientificCalc(QWidget):
         elif btn_type == "comb": style = base + "background-color: #151520; color: #60a5fa; font-size: 16px; } QPushButton:hover { background-color: #2563eb; color: white; }"
         elif btn_type == "action": style = base + "background-color: rgba(239, 68, 68, 0.1); color: #ef4444; font-size: 14px;} QPushButton:hover { background-color: #ef4444; color: white; }"
         elif btn_type == "equals": style = base + "background-color: #6d28d9; color: #ffffff; font-size: 20px; } QPushButton:hover { background-color: #a855f7; }"
+        elif btn_type == "yellow_btn": style = base + "background-color: rgba(245, 158, 11, 0.15); color: #f59e0b; font-size: 14px;} QPushButton:hover { background-color: #f59e0b; color: black; }"
+        # ----------------------------------
         btn.setStyleSheet(style)
 
     def toggle_shift(self):
@@ -177,3 +182,5 @@ class ScientificCalc(QWidget):
         else:
             self.lbl_display.setText(cur[:pos] + insert_text + cur[pos:])
             self.lbl_display.setCursorPosition(pos + len(insert_text))
+
+        self.lbl_display.setFocus()

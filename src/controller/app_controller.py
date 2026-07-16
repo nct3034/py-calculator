@@ -78,6 +78,7 @@ class AppController:
         expr = expr.replace('×', '*').replace('÷', '/').replace('−', '-')
         expr = expr.replace('π', str(math.pi)).replace('e', str(math.e))
         expr = expr.replace('²', '^2')
+        expr = expr.replace('√', 'sqrt').replace('∛', 'cbrt')
 
         if 'Ans' in expr:
             expr = expr.replace('Ans', str(self.memory.get_ans()))
