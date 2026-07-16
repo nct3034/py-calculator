@@ -3,13 +3,13 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QHBoxLayout, QPushButton, QStackedWidget, QLabel)
 from PyQt6.QtCore import Qt
 
-# Import giao diện StandardCalc (Các máy tính khác sẽ import sau)
 from src.view.standard_calc import StandardCalc
+from src.view.scientific_calc import ScientificCalc
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Python React-Style Calculator")
+        self.setWindowTitle("Python Calculator")
         
         self.setFixedSize(360, 620) 
         self.setStyleSheet("background-color: #0b0b13;") 
@@ -46,11 +46,11 @@ class MainWindow(QMainWindow):
         self.stack = QStackedWidget()
         main_layout.addWidget(self.stack)
         
-        # Trang 0: Máy tính Standard đã hoàn thiện
+        # Feature đã hoàn thiện
         self.page_standard = StandardCalc()
+        self.page_scientific = ScientificCalc()
         
-        # Các trang 1, 2, 3: Tạm thời để màn hình trống chờ phát triển
-        self.page_scientific = self.create_placeholder("This feature is comming soon!")
+        # Tạm thời để màn hình trống chờ phát triển
         self.page_solver = self.create_placeholder("This feature is comming soon!")
         self.page_base = self.create_placeholder("This feature is comming soon!")
         self.page_statistic = self.create_placeholder("This feature is comming soon!")
