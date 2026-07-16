@@ -1,145 +1,116 @@
-import sys
-from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
-                             QHBoxLayout, QPushButton, QStackedWidget, QLabel)
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QStackedWidget, QLabel, QFrame
+from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve
+from PyQt6.QtGui import QFont
 
+# Giả định bạn đã có các page này, ta sẽ import chúng
 from src.view.standard_calc import StandardCalc
 from src.view.scientific_calc import ScientificCalc
+# from src.view.calculus_calc import CalculusCalc # Sẽ dùng cho sau này
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Python Calculator")
+        self.setWindowTitle("Casio Pro - MVC Architecture")
+        self.setFixedSize(400, 650)
+        self.setStyleSheet("background-color: #12121a; color: white;")
         
-        self.setFixedSize(360, 620) 
-        self.setStyleSheet("background-color: #0b0b13;") 
-        
-        # Tạo canvas chính
+        self.init_ui()
+
+    def init_ui(self):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
-        main_layout = QVBoxLayout(central_widget)
+        
+        # Layout chính (Ngang): Chứa Sidebar và Nội dung chính
+        main_layout = QHBoxLayout(central_widget)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
+
+        # --- 1. SIDEBAR (THANH ĐIỀU HƯỚNG ẨN/HIỆN) ---
+        self.sidebar = QFrame()
+        self.sidebar.setFixedWidth(0) # Khởi tạo ẩn
+        self.sidebar.setStyleSheet("QFrame { background-color: #1e1e2d; border-right: 1px solid #2a2a40; }")
         
-        # --- 1. THANH ĐIỀU HƯỚNG (NAVIGATION BAR) ---
-        nav_bar = QWidget()
-        nav_bar.setStyleSheet("background-color: #1a1a28; border-bottom: 1px solid rgba(109,40,217,0.2);")
-        nav_layout = QHBoxLayout(nav_bar)
-        nav_layout.setContentsMargins(10, 10, 10, 10)
+        sidebar_layout = QVBoxLayout(self.sidebar)
+        sidebar_layout.setContentsMargins(15, 20, 15, 20)
+        sidebar_layout.setSpacing(10)
         
-        # Tạo nút bấm chuyển trang
-        self.btn_standard = self.create_nav_button("Standard", active=True)
-        self.btn_scientific = self.create_nav_button("Scientific")
-        self.btn_solver = self.create_nav_button("Solver")
-        self.btn_base = self.create_nav_button("Programmer")
-        self.btn_statistic = self.create_nav_button("Statistic")
+        # Tiêu đề danh mục
+        lbl_calc = QLabel("Calculator")
+        lbl_calc.setStyleSheet("font-weight: bold; font-size: 14px; color: #a78bfa; margin-top: 10px;")
         
-        nav_layout.addWidget(self.btn_standard)
-        nav_layout.addWidget(self.btn_scientific)
-        nav_layout.addWidget(self.btn_solver)
-        nav_layout.addWidget(self.btn_base)
-        nav_layout.addWidget(self.btn_statistic)
+        # Các nút Menu
+        self.btn_menu_standard = self.create_menu_button("Standard")
+        self.btn_menu_scientific = self.create_menu_button("Scientific")
+        self.btn_menu_calculus = self.create_menu_button("Calculus") # Chuẩn bị cho page mới
         
-        main_layout.addWidget(nav_bar)
+        sidebar_layout.addWidget(lbl_calc)
+        sidebar_layout.addWidget(self.btn_menu_standard)
+        sidebar_layout.addWidget(self.btn_menu_scientific)
+        sidebar_layout.addWidget(self.btn_menu_calculus)
+        sidebar_layout.addStretch()
+
+        # --- 2. KHU VỰC NỘI DUNG CHÍNH ---
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+        content_layout.setContentsMargins(10, 10, 10, 10)
         
-        # --- 2. BỘ CHUYỂN TRANG (QSTACKEDWIDGET) ---
+        # Thanh Topbar chứa nút Hamburger (≡)
+        topbar_layout = QHBoxLayout()
+        self.btn_hamburger = QPushButton("≡")
+        self.btn_hamburger.setFixedSize(40, 40)
+        self.btn_hamburger.setStyleSheet("""
+            QPushButton { background: transparent; color: white; font-size: 24px; border: none; border-radius: 8px; }
+            QPushButton:hover { background-color: rgba(255, 255, 255, 0.1); }
+        """)
+        self.btn_hamburger.clicked.connect(self.toggle_sidebar)
+        
+        self.lbl_title = QLabel("Standard")
+        self.lbl_title.setFont(QFont("Inter", 14, QFont.Weight.Bold))
+        
+        topbar_layout.addWidget(self.btn_hamburger)
+        topbar_layout.addWidget(self.lbl_title)
+        topbar_layout.addStretch()
+        
+        # QStackedWidget để chứa các máy tính
         self.stack = QStackedWidget()
-        main_layout.addWidget(self.stack)
-        
-        # Feature đã hoàn thiện
         self.page_standard = StandardCalc()
         self.page_scientific = ScientificCalc()
+        # self.page_calculus = CalculusCalc()
         
-        # Tạm thời để màn hình trống chờ phát triển
-        self.page_solver = self.create_placeholder("This feature is comming soon!")
-        self.page_base = self.create_placeholder("This feature is comming soon!")
-        self.page_statistic = self.create_placeholder("This feature is comming soon!")
+        self.stack.addWidget(self.page_standard)
+        self.stack.addWidget(self.page_scientific)
+        # self.stack.addWidget(self.page_calculus)
         
-        # Đưa tất cả các trang vào Stack
-        self.stack.addWidget(self.page_standard)   
-        self.stack.addWidget(self.page_scientific) 
-        self.stack.addWidget(self.page_solver)     
-        self.stack.addWidget(self.page_base)     
-        self.stack.addWidget(self.page_statistic)  
-        
-        # --- 3. GẮN TÍN HIỆU CLICK NÚT ---
-        self.btn_standard.clicked.connect(lambda: self.switch_page(0, self.btn_standard))
-        self.btn_scientific.clicked.connect(lambda: self.switch_page(1, self.btn_scientific))
-        self.btn_solver.clicked.connect(lambda: self.switch_page(2, self.btn_solver))
-        self.btn_base.clicked.connect(lambda: self.switch_page(3, self.btn_base))
-        self.btn_statistic.clicked.connect(lambda: self.switch_page(4, self.btn_statistic))
+        content_layout.addLayout(topbar_layout)
+        content_layout.addWidget(self.stack)
 
-    # --- CÁC HÀM HỖ TRỢ GIAO DIỆN ---
-    def create_placeholder(self, text):
-        """Tạo một màn hình trống để giữ chỗ"""
-        label = QLabel(text)
-        label.setStyleSheet("color: rgba(167,139,250,0.5); font-family: 'JetBrains Mono'; font-size: 16px;")
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        return label
+        # Lắp ráp vào main_layout
+        main_layout.addWidget(self.sidebar)
+        main_layout.addWidget(content_widget)
 
-    def create_nav_button(self, text, active=False):
-        """Tạo nút điều hướng với style dựa theo React Figma"""
+        # Cài đặt Animation cho Sidebar
+        self.animation = QPropertyAnimation(self.sidebar, b"minimumWidth")
+        self.animation.setDuration(250)
+        self.animation.setEasingCurve(QEasingCurve.Type.InOutQuart)
+
+    def create_menu_button(self, text):
         btn = QPushButton(text)
-        btn.setCursor(Qt.CursorShape.PointingHandCursor)
-        
-        color = "#c4b5fd" if active else "rgba(255,255,255,0.3)"
-        bg = "rgba(109,40,217,0.35)" if active else "transparent"
-        border = "1px solid rgba(109,40,217,0.35)" if active else "1px solid transparent"
-        
-        btn.setStyleSheet(f"""
-            QPushButton {{
-                color: {color};
-                background-color: {bg};
-                border: {border};
-                border-radius: 8px;
-                padding: 8px 4px;
-                font-size: 11px;
-                font-weight: bold;
-            }}
-            QPushButton:hover {{
-                background-color: rgba(109,40,217,0.15);
-            }}
+        btn.setStyleSheet("""
+            QPushButton {
+                text-align: left; padding: 10px; font-size: 14px; background: transparent;
+                border: none; border-radius: 8px; color: white;
+            }
+            QPushButton:hover { background-color: rgba(167, 139, 250, 0.2); color: #a78bfa; }
         """)
         return btn
 
-    def switch_page(self, index, active_btn):
-        """Chuyển trang và đổi màu nút đang được chọn"""
-        # 1. Đổi trang hiển thị
-        self.stack.setCurrentIndex(index)
-        
-        # 2. Làm mờ toàn bộ các nút
-        buttons = [self.btn_standard, self.btn_scientific, self.btn_solver, self.btn_base, self.btn_statistic]
-        for btn in buttons:
-            btn.setStyleSheet("""
-                QPushButton {
-                    color: rgba(255,255,255,0.3);
-                    background-color: transparent;
-                    border: 1px solid transparent;
-                    border-radius: 8px;
-                    padding: 8px 4px;
-                    font-size: 11px;
-                    font-weight: bold;
-                }
-                QPushButton:hover {
-                    background-color: rgba(109,40,217,0.15);
-                }
-            """)
-            
-        # 3. Làm sáng nút được bấm
-        active_btn.setStyleSheet("""
-            QPushButton {
-                color: #c4b5fd;
-                background-color: rgba(109,40,217,0.35);
-                border: 1px solid rgba(109,40,217,0.35);
-                border-radius: 8px;
-                padding: 8px 4px;
-                font-size: 11px;
-                font-weight: bold;
-            }
-        """)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
+    def toggle_sidebar(self):
+        # Trượt sidebar (Width 0 <-> 200)
+        width = self.sidebar.width()
+        if width == 0:
+            self.animation.setStartValue(0)
+            self.animation.setEndValue(200)
+        else:
+            self.animation.setStartValue(200)
+            self.animation.setEndValue(0)
+        self.animation.start()

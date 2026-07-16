@@ -1,4 +1,5 @@
 import re
+import math
 from src.model.scientific_math import ScientificMath
 
 class ExpressionParser:
@@ -9,7 +10,7 @@ class ExpressionParser:
         self.precedence = {
             '+': 1, '−': 1, '-': 1,
             '×': 2, '*': 2, '÷': 2, '/': 2,
-            '^': 3
+            '^': 3, 'ℂ': 3, 'ℙ': 3
         }
         
         # Danh sách các hàm số hỗ trợ
@@ -22,8 +23,8 @@ class ExpressionParser:
         # Xóa các khoảng trắng dư thừa
         expr = expression.replace(" ", "")
         
-        # Regex nhận diện: số thập phân | chữ cái (tên hàm) | các ký tự toán học
-        pattern = r"(\d+\.?\d*|[a-zA-Z]+|[+\-−×*÷/^()])"
+        # Regex nhận diện: số thập phân | chữ cái (tên hàm) | các ký tự toán học (bao gồm cả !)
+        pattern = r"(\d+\.?\d*|[a-zA-Z]+|[+\-−×*÷/^()!ℂℙ])"
         tokens = re.findall(pattern, expr)
         return tokens
     
@@ -34,6 +35,8 @@ class ExpressionParser:
         for token in tokens:
             if re.match(r"^\d+\.?\d*$", token):
                 output.append(float(token))
+            elif token == '!':
+                output.append(token)
             elif token in self.functions or token == '(':
                 stack.append(token)
             elif token == ')':
@@ -54,7 +57,7 @@ class ExpressionParser:
                 stack.append(token)
                 
         if '(' in stack:
-            raise ValueError
+            raise ValueError("Invalid open parentheses")
         
         while stack:
             output.append(stack.pop())
@@ -68,6 +71,13 @@ class ExpressionParser:
             if isinstance(token, float):
                 stack.append(token)
             
+            # Xử lý Giai thừa
+            elif token == '!':
+                if not stack: raise ValueError("Syntax error")
+                a = stack.pop()
+                stack.append(float(math.factorial(int(a))))
+            
+            # Xử lý Hàm số
             elif token in self.functions:
                 if not stack: raise ValueError("Syntax error")
                 a = stack.pop()
@@ -84,6 +94,7 @@ class ExpressionParser:
                 elif token == 'cbrt': stack.append(self.math.cbrt(a))
                 elif token == 'abs': stack.append(self.math.absolute(a))
             
+            # Xử lý Toán tử
             elif token in self.precedence:
                 if len(stack) < 2: raise ValueError("Insufficient operands")
                 b = stack.pop()
@@ -101,7 +112,6 @@ class ExpressionParser:
             raise ValueError("Invalid expression")
             
         return stack[0]
-
 
     def evaluate(self, expression: str) -> float:
         tokens = self.tokenize(expression)
