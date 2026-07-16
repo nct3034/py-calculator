@@ -15,9 +15,14 @@ class AppController:
         self.setup_connections()
         
     def setup_connections(self):
-        # Kết nối thanh Menu Sidebar
         self.main_window.btn_menu_standard.clicked.connect(lambda: self.change_page(0, "Standard"))
         self.main_window.btn_menu_scientific.clicked.connect(lambda: self.change_page(1, "Scientific"))
+        
+        # Kết nối thanh Menu Sidebar (Tính năng Coming Soon)
+        self.main_window.btn_menu_calculus.clicked.connect(lambda: self.show_coming_soon("Calculus"))
+        self.main_window.btn_menu_base.clicked.connect(lambda: self.show_coming_soon("Base converter"))
+        self.main_window.btn_menu_logic.clicked.connect(lambda: self.show_coming_soon("Logic & relational math"))
+        self.main_window.btn_menu_statistic.clicked.connect(lambda: self.show_coming_soon("Statistic"))
         
         # Tín hiệu tính toán từ Scientific
         self.main_window.page_scientific.evaluate_requested.connect(self.process_scientific)
@@ -25,7 +30,15 @@ class AppController:
     def change_page(self, index, title):
         self.main_window.stack.setCurrentIndex(index)
         self.main_window.lbl_title.setText(title)
-        self.main_window.toggle_sidebar() # Tự động đóng sidebar sau khi chọn
+        self.main_window.toggle_sidebar() 
+
+    def show_coming_soon(self, feature_name):
+        # Chuyển stack sang trang "Coming Soon" (có index là 2)
+        self.main_window.stack.setCurrentWidget(self.main_window.page_coming_soon)
+        # Cập nhật tiêu đề trang
+        self.main_window.lbl_title.setText(feature_name)
+        # Đóng sidebar
+        self.main_window.toggle_sidebar()
         
     def process_scientific(self, expression):
         ui = self.main_window.page_scientific
@@ -48,15 +61,11 @@ class AppController:
                 pass
             return
 
-        # --- TÍNH NĂNG TỰ ĐỘNG ĐÓNG NGOẶC CHO UI ---
         open_parens = expression.count('(')
         close_parens = expression.count(')')
         if open_parens > close_parens:
-            # Thiếu bao nhiêu ngoặc đóng thì nhân lên bấy nhiêu lần và nối vào cuối chuỗi
             expression += ')' * (open_parens - close_parens)
-        # ------------------------------------------
 
-        # TÍNH TOÁN BÌNH THƯỜNG
         ui.lbl_expression.setText(expression + " =")
         try:
             result = self.evaluate_string(expression)
@@ -69,8 +78,6 @@ class AppController:
         expr = expr.replace('×', '*').replace('÷', '/').replace('−', '-')
         expr = expr.replace('π', str(math.pi)).replace('e', str(math.e))
         expr = expr.replace('²', '^2')
-
-        # (Đã chuyển đoạn tự động đóng ngoặc lên hàm process_scientific)
 
         if 'Ans' in expr:
             expr = expr.replace('Ans', str(self.memory.get_ans()))
